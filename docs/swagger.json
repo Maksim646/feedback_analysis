@@ -1,0 +1,274 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {
+            "name": "Maxim Adamov",
+            "url": "https://github.com/Maksim646",
+            "email": "adamov4391@mail.ru"
+        }
+    },
+    "paths": {
+        "/feedback/search": {
+            "get": {
+                "description": "Search feedbacks by source, keywords or text with pagination",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feedbacks"
+                ],
+                "summary": "Search feedbacks",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by feedback source (e.g., 'telegram', 'email')",
+                        "name": "source",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Filter by comma-separated keywords",
+                        "name": "keywords",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search in feedback text",
+                        "name": "text",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number (starts from 1)",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size (number of items per page)",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.FeedbacksListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/feedbacks": {
+            "post": {
+                "description": "Add new feedback for analysis",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feedbacks"
+                ],
+                "summary": "Add new feedback",
+                "parameters": [
+                    {
+                        "description": "Feedback input data",
+                        "name": "feedback",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateFeedbackAnalysisDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateFeedbackAnalysisResponseDto"
+                        }
+                    }
+                }
+            }
+        },
+        "/feedbacks/{id}": {
+            "get": {
+                "description": "Get analyzed feedback by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feedbacks"
+                ],
+                "summary": "Get feedback by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Feedback ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.FeedbackResponseDto"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID format",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Feedback not found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "dto.CreateFeedbackAnalysisDto": {
+            "type": "object",
+            "required": [
+                "feedback_source",
+                "feedback_text"
+            ],
+            "properties": {
+                "feedback_source": {
+                    "type": "string"
+                },
+                "feedback_text": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "minLength": 1
+                },
+                "feedback_timestamp": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.CreateFeedbackAnalysisResponseDto": {
+            "type": "object",
+            "required": [
+                "feedback_id"
+            ],
+            "properties": {
+                "feedback_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.ErrorResponse": {
+            "type": "object",
+            "required": [
+                "message"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "minLength": 1
+                }
+            }
+        },
+        "dto.FeedbackResponseDto": {
+            "type": "object",
+            "required": [
+                "feedback_id",
+                "feedback_source",
+                "feedback_text",
+                "keywords",
+                "sentiment"
+            ],
+            "properties": {
+                "feedback_id": {
+                    "type": "string"
+                },
+                "feedback_source": {
+                    "type": "string"
+                },
+                "feedback_text": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "minLength": 1
+                },
+                "feedback_timestamp": {
+                    "type": "integer"
+                },
+                "keywords": {
+                    "type": "array",
+                    "maxItems": 500,
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "sentiment": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                }
+            }
+        },
+        "dto.FeedbacksListResponse": {
+            "type": "object",
+            "properties": {
+                "feedbacks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.FeedbackResponseDto"
+                    }
+                },
+                "hasMore": {
+                    "type": "boolean"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "totalCount": {
+                    "type": "integer"
+                },
+                "totalPages": {
+                    "type": "integer"
+                }
+            }
+        }
+    }
+}

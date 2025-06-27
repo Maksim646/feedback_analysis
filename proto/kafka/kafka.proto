@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package kafkaMessages;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "./";
+
+message FeedbackAnalysisCreate {
+  string FeedbackID = 1;
+  string FeedbackSource = 2;
+  string Text = 3;
+  google.protobuf.Timestamp FeedbackTimestamp = 4;
+}
+
+message FeedbackAnalysisCreated {
+  string FeedbackID = 1;
+  string FeedbackSource = 2;
+  string Text = 3;
+  google.protobuf.Timestamp FeedbackTimestamp = 4;
+  repeated string Keywords = 5;
+  string Sentiment = 6;
+}

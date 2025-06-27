@@ -1,0 +1,183 @@
+definitions:
+  dto.CreateFeedbackAnalysisDto:
+    properties:
+      feedback_source:
+        type: string
+      feedback_text:
+        maxLength: 500
+        minLength: 1
+        type: string
+      feedback_timestamp:
+        type: integer
+    required:
+    - feedback_source
+    - feedback_text
+    type: object
+  dto.CreateFeedbackAnalysisResponseDto:
+    properties:
+      feedback_id:
+        type: string
+    required:
+    - feedback_id
+    type: object
+  dto.ErrorResponse:
+    properties:
+      message:
+        maxLength: 500
+        minLength: 1
+        type: string
+    required:
+    - message
+    type: object
+  dto.FeedbackResponseDto:
+    properties:
+      feedback_id:
+        type: string
+      feedback_source:
+        type: string
+      feedback_text:
+        maxLength: 500
+        minLength: 1
+        type: string
+      feedback_timestamp:
+        type: integer
+      keywords:
+        items:
+          type: string
+        maxItems: 500
+        minItems: 1
+        type: array
+      sentiment:
+        maxLength: 255
+        minLength: 1
+        type: string
+    required:
+    - feedback_id
+    - feedback_source
+    - feedback_text
+    - keywords
+    - sentiment
+    type: object
+  dto.FeedbacksListResponse:
+    properties:
+      feedbacks:
+        items:
+          $ref: '#/definitions/dto.FeedbackResponseDto'
+        type: array
+      hasMore:
+        type: boolean
+      page:
+        type: integer
+      size:
+        type: integer
+      totalCount:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+info:
+  contact:
+    email: adamov4391@mail.ru
+    name: Maxim Adamov
+    url: https://github.com/Maksim646
+paths:
+  /feedback/search:
+    get:
+      consumes:
+      - application/json
+      description: Search feedbacks by source, keywords or text with pagination
+      parameters:
+      - description: Filter by feedback source (e.g., 'telegram', 'email')
+        in: query
+        name: source
+        type: string
+      - description: Filter by comma-separated keywords
+        in: query
+        name: keywords
+        type: string
+      - description: Search in feedback text
+        in: query
+        name: text
+        type: string
+      - description: Page number (starts from 1)
+        in: query
+        name: page
+        type: integer
+      - description: Page size (number of items per page)
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.FeedbacksListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Search feedbacks
+      tags:
+      - Feedbacks
+  /feedbacks:
+    post:
+      consumes:
+      - application/json
+      description: Add new feedback for analysis
+      parameters:
+      - description: Feedback input data
+        in: body
+        name: feedback
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateFeedbackAnalysisDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateFeedbackAnalysisResponseDto'
+      summary: Add new feedback
+      tags:
+      - Feedbacks
+  /feedbacks/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get analyzed feedback by ID
+      parameters:
+      - description: Feedback ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.FeedbackResponseDto'
+        "400":
+          description: Invalid ID format
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Feedback not found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get feedback by ID
+      tags:
+      - Feedbacks
+swagger: "2.0"

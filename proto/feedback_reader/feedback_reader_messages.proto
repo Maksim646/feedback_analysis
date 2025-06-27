@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package readerService;
+
+option go_package = "./;readerService";
+
+message GetFeedbackByIdReq {
+  string FeedbackID = 1;
+}
+
+message GetFeedbackByIdRes {
+  Feedback Feedback = 1;
+}
+
+message Feedback {
+  string FeedbackID = 1;
+  string FeedbackSource = 2;
+  string Text = 3;
+  repeated string Keywords = 4;
+  string Sentiment = 5;
+  google.protobuf.Timestamp FeedbackTimestamp = 6;
+}
+
+message SearchReq {
+  string Search = 1;
+  int64 page = 2;
+  int64 size = 3;
+}
+
+message SearchRes {
+  int64 TotalCount = 1;
+  int64 TotalPages = 2;
+  int64 Page = 3;
+  int64 Size = 4;
+  bool HasMore = 5;
+  repeated Feedback Feedbacks = 6;
+}
