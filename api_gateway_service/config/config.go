@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/Maksim646/feedback_analysis/pkg/constants"
 	"github.com/Maksim646/feedback_analysis/pkg/kafka"
@@ -62,7 +63,10 @@ func InitConfig() (*Config, error) {
 			if err != nil {
 				return nil, errors.Wrap(err, "os.Getwd")
 			}
-			configPath = fmt.Sprintf("%s/api_gateway_service/config/config.yaml", getwd)
+			getwdNormalized := strings.ReplaceAll(getwd, `\`, `/`)
+			getwdNormalized = strings.ReplaceAll(getwdNormalized, "cmd", "")
+			configPath = fmt.Sprintf("%s/config/config.yaml", getwdNormalized)
+			fmt.Println(configPath)
 		}
 	}
 

@@ -30,7 +30,7 @@ docker_dev:
 
 local:
 	@echo Starting local docker compose
-	docker-compose -f docker-compose.local.yaml up -d --build
+	docker-compose -f docker-compose.yml up -d --build
 
 
 # ==============================================================================
@@ -91,7 +91,7 @@ pprof_allocs:
 # ==============================================================================
 # Go migrate postgresql https://github.com/golang-migrate/migrate
 
-DB_NAME = products
+DB_NAME = feedback_analysis
 DB_HOST = localhost
 DB_PORT = 5432
 SSL_MODE = disable

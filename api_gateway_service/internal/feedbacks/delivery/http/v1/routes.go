@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h *feedbacksHandlers) MapRoutes() {
+func (h *feedbacksHandlers)  MapRoutes() {
 	h.group.POST("", h.CreateFeedback())
 	h.group.GET("/:id", h.GetFeedbackByID())
 	h.group.GET("/search", h.SearchFeedback())

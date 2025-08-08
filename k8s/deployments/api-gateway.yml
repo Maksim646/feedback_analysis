@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: your-registry/api-gateway:latest
+        ports:
+          - containerPort: 5001
+          - containerPort: 8001
+        env:
+          - name: POSTGRES_HOST
+            value: "postgres"
+          - name: POSTGRES_PORT
+            value: "5432"
+          - name: REDIS_ADDR
+            value: "redis:6379"
+          - name: MONGO_URI
+            value: "mongodb://mongodb:27017"
+          - name: JAEGER_HOST
+            value: "jaeger:6831"
+          - name: KAFKA_BROKERS
+            value: "kafka:9092"
+          - name: READER_SERVICE
+            value: "reader-service:5003"
