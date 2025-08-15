@@ -17,7 +17,7 @@ services:
       - POSTGRES_HOST=host.docker.internal
       - POSTGRES_PORT=5432
       - REDIS_ADDR=host.docker.internal:6379
-      - MONGO_URI=mongodb://host.docker.internal:27017
+      - MONGO_URI=mongodb://mongodb:27017
       - JAEGER_HOST=host.docker.internal:6831
       - KAFKA_BROKERS=host.docker.internal:9092
       - READER_SERVICE=reader_service:5003
@@ -48,7 +48,7 @@ services:
       - POSTGRES_HOST=host.docker.internal
       - POSTGRES_PORT=5432
       - REDIS_ADDR=host.docker.internal:6379
-      - MONGO_URI=mongodb://host.docker.internal:27017
+      - MONGO_URI=mongodb://mongodb:27017
       - JAEGER_HOST=host.docker.internal:6831
       - KAFKA_BROKERS=host.docker.internal:9092
     depends_on:
@@ -78,7 +78,7 @@ services:
       - POSTGRES_HOST=host.docker.internal
       - POSTGRES_PORT=5432
       - REDIS_ADDR=host.docker.internal:6379
-      - MONGO_URI=mongodb://host.docker.internal:27017
+      - MONGO_URI=mongodb://mongodb:27017
       - JAEGER_HOST=host.docker.internal:6831
       - KAFKA_BROKERS=host.docker.internal:9092
     depends_on:
@@ -193,7 +193,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: admin
       MONGODB_DATABASE: products
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongodb_data_container:/data/db
     networks: [ "microservices" ]
