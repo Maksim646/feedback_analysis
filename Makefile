@@ -131,9 +131,15 @@ proto_kafka:
 	@echo Generating kafka proto
 	cd proto/kafka && protoc --go_out=. --go-grpc_opt=require_unimplemented_servers=false --go-grpc_out=. kafka.proto
 
-proto_reader:
-	@echo Generating product reader microservice proto
-	cd proto/feedback_reader && protoc --go_out=. --go-grpc_opt=require_unimplemented_servers=false --go-grpc_out=. feedback_reader.proto
+proto_nlp_worker_reader:
+	@echo Generating Python gRPC code for nlp_worker
+	cd proto/nlp_worker && \
+	python3 -m grpc_tools.protoc \
+		--proto_path=. \
+		--python_out=. \
+		--grpc_python_out=. \
+		proto/nlp_worker_reader/nlp_worker_reader.proto
+
 
 proto_reader_messages:
 	@echo Generating product reader microservice proto

@@ -45,7 +45,7 @@ type Http struct {
 }
 
 type Grpc struct {
-	ReaderServicePort string `mapstructure:"readerServicePort"`
+	NlpWorkerServicePort string `mapstructure:"readerServicePort"`
 }
 
 type KafkaTopics struct {
@@ -97,7 +97,7 @@ func InitConfig() (*Config, error) {
 	}
 	readerServicePort := os.Getenv(constants.ReaderServicePort)
 	if readerServicePort != "" {
-		cfg.Grpc.ReaderServicePort = readerServicePort
+		cfg.Grpc.NlpWorkerServicePort = readerServicePort
 	}
 
 	return cfg, nil

@@ -1,0 +1,14 @@
+services:
+  nlp_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nlp_worker
+    command: ["python", "cmd/main.py", "--config", "config/config.yaml"]
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./config:/app/config  # чтобы Python видел твой config
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app

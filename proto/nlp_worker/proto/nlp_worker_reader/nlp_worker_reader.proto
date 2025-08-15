@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package readerService;
+
+option go_package = "./;readerService";
+
+import "google/protobuf/timestamp.proto";
+
+
+service NlpWorkerService {
+  rpc CreateFeedbackAnalysis(CreateFeedbackAnalysisReq) returns (CreateFeedbackAnalysisRes);
+}
+
+message CreateFeedbackAnalysisReq {
+  string feedback_id = 1;
+  string feedback_source = 2;
+  string text = 3;
+  google.protobuf.Timestamp created_at = 4;
+}
+
+message CreateFeedbackAnalysisRes {
+  string feedback_id = 1;
+  string feedback_source = 2;
+  string text = 3;
+  google.protobuf.Timestamp created_at = 4;
+  string keywords = 5;
+  string sentiment = 6;
+}

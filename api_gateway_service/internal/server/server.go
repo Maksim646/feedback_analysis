@@ -50,11 +50,11 @@ func (s *server) Run() error {
 	s.im = interceptors.NewInterceptorManager(s.log)
 	s.m = metrics.NewApiGatewayMetrics(s.cfg)
 
-	readerServiceConn, err := client.NewReaderServiceConn(ctx, s.cfg, s.im)
+	readerServiceConn, err := client.NewNlpWorkerClient(ctx, s.cfg, s.im)
 	if err != nil {
 		return err
 	}
-	defer readerServiceConn.Close() // nolint: errcheck
+	defer readerServiceConn.Close()
 	rsClient := readerService.NewFeedbackReaderClient(readerServiceConn)
 
 	kafkaProducer := kafka.NewProducer(s.log, s.cfg.Kafka.Brokers)
