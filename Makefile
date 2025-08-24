@@ -19,7 +19,21 @@ run_writer_microservice:
 	go run writer_service/cmd/main.go -config=./writer_service/config/config.yaml
 
 run_reader_microservice:
-	go run writer_service/cmd/main.go -config=./writer_service/config/config.yaml
+	go run reader_service/cmd/main.go -config=./reader_service/config/config.yaml
+
+
+# ==============================================================================
+# KAFKA
+kafka-up:
+	docker compose -f kafka/docker-compose.yml up -d --build
+
+# Останавливает и удаляет контейнеры
+kafka-down:
+	docker compose -f kafka/docker-compose.yml down -v
+
+# Смотреть логи всех контейнеров Kafka
+kafka-logs:
+	docker compose -f kafka/docker-compose.yml logs -f
 
 # ==============================================================================
 # Docker

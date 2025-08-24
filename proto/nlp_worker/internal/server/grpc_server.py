@@ -2,40 +2,33 @@ import grpc
 from concurrent import futures
 import logging
 import time
+import sys
 
-from grpc_reflection.v1alpha import reflection
-from grpc_prometheus import PromServerInterceptor, start_http_server
-from grpc_opentracing import open_tracing_server_interceptor
-
-# Импортируй свои protobuf-сгенерированные классы
-from proto.nlp_worker_reader import reader_pb2_grpc
-from delivery.grpc.reader_grpc_service import ReaderGrpcService  # реализация сервиса
-
-
-class GrpcConfig:
-    def __init__(self, port="50051", development=True):
-        self.port = port
-        self.development = development
+# Import our protobuf-generated classes
+from proto.nlp_worker_reader import nlp_worker_reader_pb2_grpc
+from internal.feedback_analysis.delivery.grpc.grpc_service import NlpWorkerGrpcService
+from internal.feedback_analysis.service.feedback_analysis_service import FeedbackAnalysisService
+from internal.feedback_analysis.repository.feedback_analysis_repository import FeedbackAnalysisRepository
+from internal.metrics.nlp_worker_metrics import NlpWorkerMetrics
+from internal.server.health_server import start_health_server
+from config.config import Config
 
 
-class Server:
-    def __init__(self, config, logger, validator, processors, metrics):
-        self.cfg = config
-        self.log = logger
-        self.v = validator
-        self.ps = processors
-        self.metrics = metrics
-
-    def new_reader_grpc_server(self):
-        interceptors = [
-            PromServerInterceptor(),  # метрики Prometheus
-            open_tracing_server_interceptor(),  # если используешь OpenTracing
-            self.log.interceptor(),  # твой кастомный логгер, должен быть gRPC unary interceptor
-        ]
-
+def serve(config: Config, metrics: NlpWorkerMetrics, logger: logging.Logger):
+    """Start the gRPC server for NLP Worker Service"""
+    try:
+        logger.info("Starting NLP Worker gRPC server...")
+    
+        repository = FeedbackAnalysisRepository(config, logger)
+        service = FeedbackAnalysisService(config, metrics, logger)
+        
+        # Start health check server
+        health_thread = start_health_server(config.probes.port, metrics, logger)
+        logger.info(f"Health check server started on port {config.probes.port}")
+        
+        # Create gRPC server
         server = grpc.server(
             futures.ThreadPoolExecutor(max_workers=10),
-            interceptors=interceptors,
             options=[
                 ('grpc.keepalive_time_ms', 10 * 60 * 1000),
                 ('grpc.keepalive_timeout_ms', 15 * 1000),
@@ -45,31 +38,39 @@ class Server:
                 ('grpc.http2.min_ping_interval_without_data_ms', 5 * 60 * 1000),
             ]
         )
-
-        # регистрация gRPC-сервиса
-        reader_grpc_service = ReaderGrpcService(self.log, self.cfg, self.v, self.ps, self.metrics)
-        reader_pb2_grpc.add_ReaderServiceServicer_to_server(reader_grpc_service, server)
-
-        # Enable Prometheus metrics
-        start_http_server(port=8000)  # порт для экспорта метрик
-        PromServerInterceptor().register(server)
-
-        # Enable reflection for development/debugging
-        if self.cfg.development:
-            SERVICE_NAMES = (
-                reader_pb2_grpc.DESCRIPTOR.services_by_name['ReaderService'].full_name,
-                reflection.SERVICE_NAME,
-            )
-            reflection.enable_server_reflection(SERVICE_NAMES, server)
-
-        # Start server in background
-        address = f"[::]:{self.cfg.port}"
+        
+        # Register gRPC service
+        nlp_worker_service = NlpWorkerGrpcService(logger, config, service, metrics)
+        nlp_worker_reader_pb2_grpc.add_NlpWorkerServiceServicer_to_server(nlp_worker_service, server)
+        
+        # Start Prometheus metrics server (simplified)
+        try:
+            from prometheus_client import start_http_server
+            start_http_server(port=config.probes.prometheusPort)
+            logger.info(f"Prometheus metrics server started on port {config.probes.prometheusPort}")
+        except Exception as e:
+            logger.warning(f"Could not start Prometheus server: {e}")
+        
+        # Start server
+        address = f"[::]:{config.grpc.port}"
         server.add_insecure_port(address)
-        self.log.info(f"Reader gRPC server is listening on port: {self.cfg.port}")
         server.start()
-
-        def stop_server():
-            self.log.info("Stopping gRPC server...")
+        
+        logger.info(f"NLP Worker gRPC server started successfully on port {config.grpc.port}")
+        
+        # Set model health to healthy
+        metrics.set_nlp_model_health(True)
+        
+        # Keep server running
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            logger.info("Received shutdown signal, stopping server...")
             server.stop(0)
-
-        return stop_server, server
+            repository.close_connection()
+            logger.info("Server stopped gracefully")
+            
+    except Exception as e:
+        logger.error(f"Failed to start gRPC server: {e}")
+        raise

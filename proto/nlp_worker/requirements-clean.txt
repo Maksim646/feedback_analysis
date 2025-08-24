@@ -1,0 +1,28 @@
+# Core gRPC dependencies
+grpcio>=1.70.0
+grpcio-tools>=1.70.0
+protobuf>=6.31.0
+
+# Configuration
+PyYAML>=6.0
+
+# Metrics
+prometheus-client>=0.17.0
+
+# Database
+pymongo>=4.9.0,<5.0.0
+
+# HTTP client
+requests>=2.28.0
+
+# NLP (core)
+nltk>=3.8.0
+
+# Utilities
+python-dateutil>=2.8.0
+
+# Kafka
+kafka-python>=2.0.2
+
+# Snappy
+python-snappy>=0.7.3

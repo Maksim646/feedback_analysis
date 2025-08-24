@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # MongoDB for storing analysis results
+  mongo:
+    image: mongo:latest
+    container_name: nlp-worker-mongo
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: feedback_analysis
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - nlp-network
+
+  # NLP Worker Service
+  nlp-worker:
+    build: .
+    container_name: nlp-worker-service
+    ports:
+      - "5003:5003"  # gRPC
+      - "3003:3003"  # Health checks
+      - "8003:8003"  # Prometheus metrics
+    environment:
+      - MONGODB_URI=mongodb://admin:admin@mongo:27017
+    depends_on:
+      - mongo
+    networks:
+      - nlp-network
+    restart: unless-stopped
+
+  # Optional: MongoDB Express for database management
+  mongo-express:
+    image: mongo-express:latest
+    container_name: nlp-worker-mongo-express
+    ports:
+      - "8082:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin@mongo:27018/
+    depends_on:
+      - mongo
+    networks:
+      - nlp-network
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
+
+networks:
+  nlp-network:
+    driver: bridge

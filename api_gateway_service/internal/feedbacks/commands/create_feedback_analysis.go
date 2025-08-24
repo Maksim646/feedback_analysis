@@ -46,7 +46,7 @@ func (c *createFeedbackAnalysisHandler) Handle(ctx context.Context, command *Cre
 	}
 
 	return c.kafkaProducer.PublishMessage(ctx, kafka.Message{
-		Topic:   c.cfg.KafkaTopics.RawFeedback.TopicName,
+		Topic:   c.cfg.KafkaTopics.FeedbackRaw.TopicName,
 		Value:   dtoBytes,
 		Time:    time.Now().UTC(),
 		Headers: tracing.GetKafkaTracingHeadersFromSpanCtx(span.Context()),

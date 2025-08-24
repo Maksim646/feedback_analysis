@@ -49,8 +49,8 @@ type Grpc struct {
 }
 
 type KafkaTopics struct {
-	RawFeedback      kafka.TopicConfig `mapstructure:"rawFeedback"`
-	AnalyzedFeedback kafka.TopicConfig `mapstructure:"analyzedFeedback"`
+	FeedbackRaw      kafka.TopicConfig `mapstructure:"feedbackRaw"`
+	FeedbackAnalyzed kafka.TopicConfig `mapstructure:"feedbackAnalyzed"`
 }
 
 func InitConfig() (*Config, error) {

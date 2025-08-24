@@ -1,51 +1,54 @@
 import grpc
 from datetime import datetime
+from google.protobuf.timestamp_pb2 import Timestamp
 
-from grpc_interceptor.exceptions import GrpcException
-from grpc_interceptor import ServerInterceptor
-
-from proto import product_reader_pb2, product_reader_pb2_grpc
+from proto.nlp_worker_reader import nlp_worker_reader_pb2, nlp_worker_reader_pb2_grpc
 from config.config import Config
-from internal.product.service import ProductService
-from internal.product.commands.commands import CreateFeedbackAnalysisCommand
-from internal.metrics.reader_service_metrics import ReaderServiceMetrics
+from internal.feedback_analysis.service.feedback_analysis_service import FeedbackAnalysisService
+from internal.metrics.nlp_worker_metrics import NlpWorkerMetrics
 
 
-class ReaderGRPCService(product_reader_pb2_grpc.NlpWorkerServiceServicer):
-    def __init__(self, logger, cfg: Config, validator, service: ProductService, metrics: ReaderServiceMetrics):
+class NlpWorkerGrpcService(nlp_worker_reader_pb2_grpc.NlpWorkerServiceServicer):
+    def __init__(self, logger, cfg: Config, service: FeedbackAnalysisService, metrics: NlpWorkerMetrics):
         self.log = logger
         self.cfg = cfg
-        self.validator = validator
         self.service = service
         self.metrics = metrics
 
     def CreateFeedbackAnalysis(self, request, context):
+        """Process feedback text and return sentiment analysis and keywords"""
         self.metrics.create_feedback_analysis_grpc_requests.inc()
-
-        # Трейсинг можно встроить здесь, если ты используешь opentelemetry или jaeger_client
-        self.log.info("CreateFeedbackAnalysis gRPC called")
-
-        command = CreateFeedbackAnalysisCommand(
-            feedback_id=request.product_id,
-            source=request.name,
-            text=request.description,
-            keywords=request.price,  # скорее всего, нужно заменить, т.к. тип некорректен
-            sentiment=[],            # заполняется после анализа
-            created_at=datetime.utcnow()
-        )
-
+        
         try:
-            self.validator.validate(command)  # предположим, что ты используешь `pydantic` или `cerberus`
+            self.log.info(f"Processing feedback analysis for ID: {request.feedback_id}")
+            
+            # Convert protobuf timestamp to datetime
+            created_at = datetime.fromtimestamp(request.created_at.seconds + request.created_at.nanos / 1e9)
+            
+            # Analyze the feedback text
+            analysis_result = self.service.analyze_feedback(
+                feedback_id=request.feedback_id,
+                feedback_source=request.feedback_source,
+                text=request.text,
+                created_at=created_at
+            )
+            
+            # Create response
+            response = nlp_worker_reader_pb2.CreateFeedbackAnalysisRes(
+                feedback_id=analysis_result.feedback_id,
+                feedback_source=analysis_result.feedback_source,
+                text=analysis_result.text,
+                created_at=request.created_at,  # Keep original timestamp
+                keywords=analysis_result.keywords,
+                sentiment=analysis_result.sentiment
+            )
+            
+            self.metrics.success_grpc_requests.inc()
+            self.log.info(f"Successfully analyzed feedback {request.feedback_id}")
+            
+            return response
+            
         except Exception as e:
-            self.log.warn(f"Validation error: {str(e)}")
-            context.abort(grpc.StatusCode.INVALID_ARGUMENT, str(e))
-
-        try:
-            self.service.commands.create_product.handle(context, command)
-        except Exception as e:
-            self.log.warn(f"Handler error: {str(e)}")
-            context.abort(grpc.StatusCode.INTERNAL, str(e))
-
-        self.metrics.success_grpc_requests.inc()
-
-        return product_reader_pb2.CreateProductRes(product_id=request.product_id)
+            self.log.error(f"Error processing feedback analysis: {str(e)}")
+            self.metrics.failed_grpc_requests.inc()
+            context.abort(grpc.StatusCode.INTERNAL, f"Internal error: {str(e)}")

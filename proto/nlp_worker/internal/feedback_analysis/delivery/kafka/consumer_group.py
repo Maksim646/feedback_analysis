@@ -24,12 +24,9 @@ class ReaderMessageProcessor:
         """
         Метод, который запускается в потоке/воркере
         """
-        while not ctx.is_set():  # ctx — threading.Event, аналог context.Context.Done()
-            try:
-                message = next(consumer)
-            except Exception as e:
-                self.log.warning(f"Worker {worker_id}: error fetching message: {e}")
-                continue
+        for message in consumer:
+            self.log.info(f"Worker {worker_id}: got message {message.offset}")
+            
 
             self.log.info(f"Worker {worker_id}: Received message: topic={message.topic}, partition={message.partition}, offset={message.offset}")
 

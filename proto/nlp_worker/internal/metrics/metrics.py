@@ -30,6 +30,7 @@ class ReaderServiceMetrics:
             "The total number of error kafka processed messages"
         )
 
+
     def start_metrics_server(self, port=8003):
         self.logger.info(f"Starting Prometheus metrics HTTP server on port {port}")
         start_http_server(port)

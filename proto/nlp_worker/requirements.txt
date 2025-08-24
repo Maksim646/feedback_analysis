@@ -1,6 +1,29 @@
-grpcio==1.64.0
-grpcio-tools==1.64.0
-protobuf==5.27.2
-PyYAML
-grpc
+grpcio>=1.70.0
+grpcio-tools>=1.70.0
+protobuf>=6.31.0
+PyYAML==6.0.1
+grpcio-reflection>=1.70.0
+prometheus-client==0.17.1
+pymongo>=4.9.0,<5.0.0
+requests==2.31.0
+
+# Core NLP libraries (required)
+nltk==3.8.1
+
+# Kafka for message processing
+kafka-python>=2.0.2
+
+# Optional NLP libraries (for enhanced analysis)
+# textblob==0.17.1  # Uncomment for better sentiment analysis
+# spacy==3.7.2      # Uncomment for enhanced keyword extraction
+
+# Machine learning libraries (optional)
+# transformers==4.35.2
+# torch==2.1.1
+# scikit-learn==1.3.2
+# pandas==2.1.3
+# numpy==1.24.3
+
+# Utilities
+python-dateutil==2.8.2
 

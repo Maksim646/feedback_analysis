@@ -5,7 +5,7 @@ from typing import List, Optional
 
 @dataclass
 class GrpcConfig:
-    port: str
+    port: int
     development: bool
 
 
@@ -13,10 +13,10 @@ class GrpcConfig:
 class ProbesConfig:
     readinessPath: str
     livenessPath: str
-    port: str
-    pprof: str
+    port: int
+    pprof: int
     prometheusPath: str
-    prometheusPort: str
+    prometheusPort: int
     checkIntervalSeconds: int
 
 
@@ -28,13 +28,11 @@ class LoggerConfig:
 
 
 @dataclass
-class PostgresConfig:
-    host: str
-    port: int
-    user: str
-    password: str
-    dbName: str
-    sslMode: bool
+class NlpConfig:
+    model_name: str
+    sentiment_threshold: float
+    max_keywords: int
+    language: str
 
 
 @dataclass
@@ -46,11 +44,9 @@ class KafkaTopicConfig:
 
 @dataclass
 class KafkaTopicsConfig:
-    productCreate: KafkaTopicConfig
-    productUpdate: KafkaTopicConfig
-    productCreated: KafkaTopicConfig
-    productUpdated: KafkaTopicConfig
-    productDeleted: KafkaTopicConfig
+    feedbackRaw: KafkaTopicConfig
+    feedbackCreate: KafkaTopicConfig
+    feedbackAnalyzed: KafkaTopicConfig
 
 
 @dataclass
@@ -70,16 +66,19 @@ class RedisConfig:
 
 
 @dataclass
+class MongoCollectionsConfig:
+    feedback_analysis: str
+    keywords: str
+    sentiment_history: str
+
+
+@dataclass
 class MongoConfig:
     uri: str
     user: str
     password: str
     db: str
-
-
-@dataclass
-class MongoCollectionsConfig:
-    products: str
+    collections: MongoCollectionsConfig
 
 
 @dataclass
@@ -91,22 +90,15 @@ class JaegerConfig:
 
 
 @dataclass
-class ServiceSettingsConfig:
-    redisProductPrefixKey: str
-
-
-@dataclass
 class Config:
     serviceName: str
     grpc: GrpcConfig
     probes: ProbesConfig
     logger: LoggerConfig
-    postgres: PostgresConfig
+    nlp: NlpConfig
     kafka: KafkaConfig
     redis: RedisConfig
     mongo: MongoConfig
-    mongoCollections: MongoCollectionsConfig
-    serviceSettings: ServiceSettingsConfig
     jaeger: JaegerConfig
 
 

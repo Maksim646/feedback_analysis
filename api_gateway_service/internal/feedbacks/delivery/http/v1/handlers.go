@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"fmt"
+
 	"github.com/Maksim646/feedback_analysis/api_gateway_service/config"
 	"github.com/Maksim646/feedback_analysis/api_gateway_service/internal/dto"
 	"github.com/Maksim646/feedback_analysis/api_gateway_service/internal/metrics"
@@ -112,7 +114,10 @@ func (h *feedbacksHandlers) GetFeedbackByID() echo.HandlerFunc {
 			return httpErrors.ErrorCtxResponse(c, err, h.cfg.Http.DebugErrorsResponse)
 		}
 
+		fmt.Println("ВОТ ТАКОЙ ID feedbackUUID", feedbackUUID)
+
 		query := queries.NewGetFeedbackByIdQuery(feedbackUUID)
+		fmt.Println("ВСЕ ЕЩЕ НЕ УПАЛ")
 		response, err := h.ps.Queries.GetFeedbackById.Handle(ctx, query)
 		if err != nil {
 			h.log.WarnMsg("GetFeedbackById", err)
