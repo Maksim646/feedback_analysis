@@ -21,6 +21,16 @@ run_writer_microservice:
 run_reader_microservice:
 	go run reader_service/cmd/main.go -config=./reader_service/config/config.yaml
 
+run_nlp_worker:
+	docker stop mongodb && docker rm mongodb
+	cd proto/nlp_worker
+	docker run -d -p 27017:27017 --name mongodb mongo:latest 
+	cd proto/nlp_worker && ./start.sh
+
+run_reader_service:
+	cd reader_service && go run cmd/main.go -config=./config/config.yaml
+
+
 
 # ==============================================================================
 # KAFKA
@@ -155,9 +165,9 @@ proto_nlp_worker_reader:
 		proto/nlp_worker_reader/nlp_worker_reader.proto
 
 
-proto_reader_messages:
+proto_reader:
 	@echo Generating product reader microservice proto
-	cd proto/feedback_reader && protoc --go_out=. --go-grpc_opt=require_unimplemented_servers=false --go-grpc_out=. feedback_reader_messages.proto
+	cd reader_service/proto/feedback_reader && protoc --go_out=. --go-grpc_opt=require_unimplemented_servers=false --go-grpc_out=. feedback_reader.proto
 
 proto_writer:
 	@echo Generating product writer microservice proto
@@ -171,4 +181,4 @@ proto_writer_message:
 
 proto_reader_message:
 	@echo Generating product reader messages microservice proto
-	cd reader_service/proto/product_reader && protoc --go_out=. --go-grpc_opt=require_unimplemented_servers=false --go-grpc_out=. product_reader_messages.proto
+	cd reader_service/proto/feedback_reader && protoc --go_out=. --go-grpc_opt=require_unimplemented_servers=false --go-grpc_out=. feedback_reader_messages.proto

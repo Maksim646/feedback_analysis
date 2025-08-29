@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package readerService;
+
+option go_package = "./;readerService";
+
+import "feedback_reader_messages.proto";
+
+
+service readerService {
+  rpc CreateFeedback(CreateFeedbackReq) returns (CreateFeedbackRes);
+}

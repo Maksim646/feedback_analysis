@@ -21,3 +21,17 @@ message FeedbackAnalysisCreated {
   repeated string Keywords = 5;
   string Sentiment = 6;
 }
+
+message Feedback {
+  string FeedbackID = 1;
+  string FeedbackSource = 2;
+  string Text = 3;
+  google.protobuf.Timestamp FeedbackTimestamp = 4;
+  repeated string Keywords = 5;
+  string Sentiment = 6;
+}
+
+
+message FeedbackCreated {
+  Feedback Feedback = 1;
+}

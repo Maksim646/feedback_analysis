@@ -174,6 +174,134 @@ func (x *FeedbackAnalysisCreated) GetSentiment() string {
 	return ""
 }
 
+type Feedback struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	FeedbackID        string                 `protobuf:"bytes,1,opt,name=FeedbackID,proto3" json:"FeedbackID,omitempty"`
+	FeedbackSource    string                 `protobuf:"bytes,2,opt,name=FeedbackSource,proto3" json:"FeedbackSource,omitempty"`
+	Text              string                 `protobuf:"bytes,3,opt,name=Text,proto3" json:"Text,omitempty"`
+	FeedbackTimestamp *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=FeedbackTimestamp,proto3" json:"FeedbackTimestamp,omitempty"`
+	Keywords          []string               `protobuf:"bytes,5,rep,name=Keywords,proto3" json:"Keywords,omitempty"`
+	Sentiment         string                 `protobuf:"bytes,6,opt,name=Sentiment,proto3" json:"Sentiment,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *Feedback) Reset() {
+	*x = Feedback{}
+	mi := &file_kafka_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Feedback) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Feedback) ProtoMessage() {}
+
+func (x *Feedback) ProtoReflect() protoreflect.Message {
+	mi := &file_kafka_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Feedback.ProtoReflect.Descriptor instead.
+func (*Feedback) Descriptor() ([]byte, []int) {
+	return file_kafka_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Feedback) GetFeedbackID() string {
+	if x != nil {
+		return x.FeedbackID
+	}
+	return ""
+}
+
+func (x *Feedback) GetFeedbackSource() string {
+	if x != nil {
+		return x.FeedbackSource
+	}
+	return ""
+}
+
+func (x *Feedback) GetText() string {
+	if x != nil {
+		return x.Text
+	}
+	return ""
+}
+
+func (x *Feedback) GetFeedbackTimestamp() *timestamppb.Timestamp {
+	if x != nil {
+		return x.FeedbackTimestamp
+	}
+	return nil
+}
+
+func (x *Feedback) GetKeywords() []string {
+	if x != nil {
+		return x.Keywords
+	}
+	return nil
+}
+
+func (x *Feedback) GetSentiment() string {
+	if x != nil {
+		return x.Sentiment
+	}
+	return ""
+}
+
+type FeedbackCreated struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Feedback      *Feedback              `protobuf:"bytes,1,opt,name=Feedback,proto3" json:"Feedback,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FeedbackCreated) Reset() {
+	*x = FeedbackCreated{}
+	mi := &file_kafka_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FeedbackCreated) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FeedbackCreated) ProtoMessage() {}
+
+func (x *FeedbackCreated) ProtoReflect() protoreflect.Message {
+	mi := &file_kafka_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FeedbackCreated.ProtoReflect.Descriptor instead.
+func (*FeedbackCreated) Descriptor() ([]byte, []int) {
+	return file_kafka_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *FeedbackCreated) GetFeedback() *Feedback {
+	if x != nil {
+		return x.Feedback
+	}
+	return nil
+}
+
 var File_kafka_proto protoreflect.FileDescriptor
 
 const file_kafka_proto_rawDesc = "" +
@@ -194,7 +322,18 @@ const file_kafka_proto_rawDesc = "" +
 	"\x04Text\x18\x03 \x01(\tR\x04Text\x12H\n" +
 	"\x11FeedbackTimestamp\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x11FeedbackTimestamp\x12\x1a\n" +
 	"\bKeywords\x18\x05 \x03(\tR\bKeywords\x12\x1c\n" +
-	"\tSentiment\x18\x06 \x01(\tR\tSentimentB\x04Z\x02./b\x06proto3"
+	"\tSentiment\x18\x06 \x01(\tR\tSentiment\"\xea\x01\n" +
+	"\bFeedback\x12\x1e\n" +
+	"\n" +
+	"FeedbackID\x18\x01 \x01(\tR\n" +
+	"FeedbackID\x12&\n" +
+	"\x0eFeedbackSource\x18\x02 \x01(\tR\x0eFeedbackSource\x12\x12\n" +
+	"\x04Text\x18\x03 \x01(\tR\x04Text\x12H\n" +
+	"\x11FeedbackTimestamp\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x11FeedbackTimestamp\x12\x1a\n" +
+	"\bKeywords\x18\x05 \x03(\tR\bKeywords\x12\x1c\n" +
+	"\tSentiment\x18\x06 \x01(\tR\tSentiment\"F\n" +
+	"\x0fFeedbackCreated\x123\n" +
+	"\bFeedback\x18\x01 \x01(\v2\x17.kafkaMessages.FeedbackR\bFeedbackB\x04Z\x02./b\x06proto3"
 
 var (
 	file_kafka_proto_rawDescOnce sync.Once
@@ -208,20 +347,24 @@ func file_kafka_proto_rawDescGZIP() []byte {
 	return file_kafka_proto_rawDescData
 }
 
-var file_kafka_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_kafka_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_kafka_proto_goTypes = []any{
 	(*FeedbackAnalysisCreate)(nil),  // 0: kafkaMessages.FeedbackAnalysisCreate
 	(*FeedbackAnalysisCreated)(nil), // 1: kafkaMessages.FeedbackAnalysisCreated
-	(*timestamppb.Timestamp)(nil),   // 2: google.protobuf.Timestamp
+	(*Feedback)(nil),                // 2: kafkaMessages.Feedback
+	(*FeedbackCreated)(nil),         // 3: kafkaMessages.FeedbackCreated
+	(*timestamppb.Timestamp)(nil),   // 4: google.protobuf.Timestamp
 }
 var file_kafka_proto_depIdxs = []int32{
-	2, // 0: kafkaMessages.FeedbackAnalysisCreate.FeedbackTimestamp:type_name -> google.protobuf.Timestamp
-	2, // 1: kafkaMessages.FeedbackAnalysisCreated.FeedbackTimestamp:type_name -> google.protobuf.Timestamp
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	4, // 0: kafkaMessages.FeedbackAnalysisCreate.FeedbackTimestamp:type_name -> google.protobuf.Timestamp
+	4, // 1: kafkaMessages.FeedbackAnalysisCreated.FeedbackTimestamp:type_name -> google.protobuf.Timestamp
+	4, // 2: kafkaMessages.Feedback.FeedbackTimestamp:type_name -> google.protobuf.Timestamp
+	2, // 3: kafkaMessages.FeedbackCreated.Feedback:type_name -> kafkaMessages.Feedback
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_kafka_proto_init() }
@@ -235,7 +378,7 @@ func file_kafka_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_kafka_proto_rawDesc), len(file_kafka_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
