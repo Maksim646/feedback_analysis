@@ -7,6 +7,7 @@ option go_package = "./;readerService";
 import "feedback_reader_messages.proto";
 
 
-service readerService {
+service FeedbackReader {
   rpc CreateFeedback(CreateFeedbackReq) returns (CreateFeedbackRes);
+  rpc GetFeedback(GetFeedbackByIdReq) returns (GetFeedbackByIdRes);
 }

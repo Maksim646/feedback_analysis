@@ -52,17 +52,26 @@ class FeedbackAnalysisRepository:
         try:
             # Convert to dictionary
             result_dict = result.to_dict()
-            
-            # Use upsert to avoid duplicates
+
+            # Ensure _id is used as primary key (string UUID)
+            if isinstance(result_dict.get("keywords"), str):
+                result_dict["keywords"] = [result_dict["keywords"]]
+            elif result_dict.get("keywords") is None:
+                result_dict["keywords"] = []
+
+            # Используем _id
+            result_dict["_id"] = result.feedback_id
+            result_dict.pop("feedback_id", None)
+
             self.collection.update_one(
-                {"feedback_id": result.feedback_id},
+                {"_id": result_dict["_id"]},
                 {"$set": result_dict},
                 upsert=True
             )
-            
-            self.logger.debug(f"Saved analysis result for feedback {result.feedback_id}")
+
+            self.logger.debug(f"Saved analysis result for feedback {result_dict['_id']}")
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Failed to save analysis result: {e}")
             return False
@@ -70,13 +79,15 @@ class FeedbackAnalysisRepository:
     def get_analysis_result(self, feedback_id: str) -> Optional[FeedbackAnalysisResult]:
         """Get analysis result by feedback ID"""
         try:
-            result_dict = self.collection.find_one({"feedback_id": feedback_id})
-            
+            result_dict = self.collection.find_one({"_id": feedback_id})
+
             if result_dict:
+                # Restore feedback_id for domain model
+                result_dict["feedback_id"] = result_dict["_id"]
                 return FeedbackAnalysisResult.from_dict(result_dict)
-            
+
             return None
-            
+
         except Exception as e:
             self.logger.error(f"Failed to get analysis result: {e}")
             return None

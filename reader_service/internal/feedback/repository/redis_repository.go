@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	redisProductPrefixKey = "reader:product"
+	redisFeedbackPrefixKey = "reader:feedback"
 )
 
 type redisRepository struct {
@@ -26,7 +26,7 @@ func NewRedisRepository(log logger.Logger, cfg *config.Config, redisClient redis
 	return &redisRepository{log: log, cfg: cfg, redisClient: redisClient}
 }
 
-func (r *redisRepository) PutProduct(ctx context.Context, key string, feedbackAnalyzed *models.FeedbackAnalyzed) {
+func (r *redisRepository) PutFeedback(ctx context.Context, key string, feedbackAnalyzed *models.FeedbackAnalyzed) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "redisRepository.PutFeedbackAnalyzed")
 	defer span.Finish()
 
@@ -36,18 +36,18 @@ func (r *redisRepository) PutProduct(ctx context.Context, key string, feedbackAn
 		return
 	}
 
-	if err := r.redisClient.HSetNX(ctx, r.getRedisProductPrefixKey(), key, feedbackAnalyzesBytes).Err(); err != nil {
+	if err := r.redisClient.HSetNX(ctx, r.getRedisFeedbackPrefixKey(), key, feedbackAnalyzesBytes).Err(); err != nil {
 		r.log.WarnMsg("redisClient.HSetNX", err)
 		return
 	}
-	r.log.Debugf("HSetNX prefix: %s, key: %s", r.getRedisProductPrefixKey(), key)
+	r.log.Debugf("HSetNX prefix: %s, key: %s", r.getRedisFeedbackPrefixKey(), key)
 }
 
-func (r *redisRepository) GetProduct(ctx context.Context, key string) (*models.FeedbackAnalyzed, error) {
+func (r *redisRepository) GetFeedback(ctx context.Context, key string) (*models.FeedbackAnalyzed, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "redisRepository.GetFeedbackAnalyzed")
 	defer span.Finish()
 
-	feedbackAnalyzesBytes, err := r.redisClient.HGet(ctx, r.getRedisProductPrefixKey(), key).Bytes()
+	feedbackAnalyzesBytes, err := r.redisClient.HGet(ctx, r.getRedisFeedbackPrefixKey(), key).Bytes()
 	if err != nil {
 		if err != redis.Nil {
 			r.log.WarnMsg("redisClient.HGet", err)
@@ -55,35 +55,35 @@ func (r *redisRepository) GetProduct(ctx context.Context, key string) (*models.F
 		return nil, errors.Wrap(err, "redisClient.HGet")
 	}
 
-	var product models.FeedbackAnalyzed
-	if err := json.Unmarshal(feedbackAnalyzesBytes, &product); err != nil {
+	var feedback models.FeedbackAnalyzed
+	if err := json.Unmarshal(feedbackAnalyzesBytes, &feedback); err != nil {
 		return nil, err
 	}
 
-	r.log.Debugf("HGet prefix: %s, key: %s", r.getRedisProductPrefixKey(), key)
-	return &product, nil
+	r.log.Debugf("HGet prefix: %s, key: %s", r.getRedisFeedbackPrefixKey(), key)
+	return &feedback, nil
 }
 
-func (r *redisRepository) DelProduct(ctx context.Context, key string) {
-	if err := r.redisClient.HDel(ctx, r.getRedisProductPrefixKey(), key).Err(); err != nil {
-		r.log.WarnMsg("redisClient.HDel", err)
-		return
-	}
-	r.log.Debugf("HDel prefix: %s, key: %s", r.getRedisProductPrefixKey(), key)
-}
+// func (r *redisRepository) DelProduct(ctx context.Context, key string) {
+// 	if err := r.redisClient.HDel(ctx, r.getRedisProductPrefixKey(), key).Err(); err != nil {
+// 		r.log.WarnMsg("redisClient.HDel", err)
+// 		return
+// 	}
+// 	r.log.Debugf("HDel prefix: %s, key: %s", r.getRedisProductPrefixKey(), key)
+// }
 
-func (r *redisRepository) DelAllProducts(ctx context.Context) {
-	if err := r.redisClient.Del(ctx, r.getRedisProductPrefixKey()).Err(); err != nil {
-		r.log.WarnMsg("redisClient.HDel", err)
-		return
-	}
-	r.log.Debugf("Del key: %s", r.getRedisProductPrefixKey())
-}
+// func (r *redisRepository) DelAllProducts(ctx context.Context) {
+// 	if err := r.redisClient.Del(ctx, r.getRedisProductPrefixKey()).Err(); err != nil {
+// 		r.log.WarnMsg("redisClient.HDel", err)
+// 		return
+// 	}
+// 	r.log.Debugf("Del key: %s", r.getRedisProductPrefixKey())
+// }
 
-func (r *redisRepository) getRedisProductPrefixKey() string {
-	if r.cfg.ServiceSettings.RedisProductPrefixKey != "" {
-		return r.cfg.ServiceSettings.RedisProductPrefixKey
+func (r *redisRepository) getRedisFeedbackPrefixKey() string {
+	if r.cfg.ServiceSettings.RedisFeedbackPrefixKey != "" {
+		return r.cfg.ServiceSettings.RedisFeedbackPrefixKey
 	}
 
-	return redisProductPrefixKey
+	return redisFeedbackPrefixKey
 }

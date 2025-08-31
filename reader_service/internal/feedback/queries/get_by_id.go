@@ -29,7 +29,7 @@ func (q *getFeedbackByIdHandler) Handle(ctx context.Context, query *GetFeedbackB
 	span, ctx := opentracing.StartSpanFromContext(ctx, "getFeedbackByIdHandler.Handle")
 	defer span.Finish()
 
-	if feedback, err := q.redisRepo.GetFeedbackAnalyzed(ctx, query.FeedbackID.String()); err == nil && feedback != nil {
+	if feedback, err := q.redisRepo.GetFeedback(ctx, query.FeedbackID.String()); err == nil && feedback != nil {
 		return feedback, nil
 	}
 
@@ -38,6 +38,6 @@ func (q *getFeedbackByIdHandler) Handle(ctx context.Context, query *GetFeedbackB
 		return nil, err
 	}
 
-	q.redisRepo.PutFeedbackAnalyzed(ctx, feedback.FeedbackID, feedback)
+	q.redisRepo.PutFeedback(ctx, feedback.FeedbackID, feedback)
 	return feedback, nil
 }

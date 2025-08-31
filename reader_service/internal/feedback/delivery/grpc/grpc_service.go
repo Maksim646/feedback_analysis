@@ -9,16 +9,18 @@ import (
 	// "github.com/Maksim646/feedback_analysis/pkg/utils"
 	"github.com/Maksim646/feedback_analysis/reader_service/config"
 	"github.com/Maksim646/feedback_analysis/reader_service/internal/metrics"
+	"github.com/Maksim646/feedback_analysis/reader_service/internal/models"
 
 	// "github.com/Maksim646/feedback_analysis/reader_service/internal/models"
 	"github.com/Maksim646/feedback_analysis/reader_service/internal/feedback/commands"
-	// "github.com/Maksim646/feedback_analysis/reader_service/internal/product/queries"
+	"github.com/Maksim646/feedback_analysis/reader_service/internal/feedback/queries"
 	"github.com/Maksim646/feedback_analysis/reader_service/internal/feedback/service"
 	readerService "github.com/Maksim646/feedback_analysis/reader_service/proto/feedback_reader"
 	"github.com/go-playground/validator"
 
-	// uuid "github.com/satori/go.uuid"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -36,7 +38,7 @@ func NewReaderGrpcService(log logger.Logger, cfg *config.Config, v *validator.Va
 	return &grpcService{log: log, cfg: cfg, v: v, ps: ps, metrics: metrics}
 }
 
-func (s *grpcService) CreateFeedbackAnalyzed(ctx context.Context, req *readerService.CreateFeedbackReq) (*readerService.CreateFeedbackRes, error) {
+func (s *grpcService) CreateFeedback(ctx context.Context, req *readerService.CreateFeedbackReq) (*readerService.CreateFeedbackRes, error) {
 	// s.metrics.CreateFeedbackGrpcRequests.Inc()
 
 	ctx, span := tracing.StartGrpcServerTracerSpan(ctx, "grpcService.CreateFeedback")
@@ -79,33 +81,33 @@ func (s *grpcService) CreateFeedbackAnalyzed(ctx context.Context, req *readerSer
 // 	return &readerService.UpdateProductRes{ProductID: req.GetProductID()}, nil
 // }
 
-// func (s *grpcService) GetProductById(ctx context.Context, req *readerService.GetProductByIdReq) (*readerService.GetProductByIdRes, error) {
-// 	s.metrics.GetProductByIdGrpcRequests.Inc()
+func (s *grpcService) GetFeedback(ctx context.Context, req *readerService.GetFeedbackByIdReq) (*readerService.GetFeedbackByIdRes, error) {
+	// s.metrics.GetProductByIdGrpcRequests.Inc()
 
-// 	ctx, span := tracing.StartGrpcServerTracerSpan(ctx, "grpcService.GetProductById")
-// 	defer span.Finish()
+	ctx, span := tracing.StartGrpcServerTracerSpan(ctx, "grpcService.GetFeedbackById")
+	defer span.Finish()
 
-// 	productUUID, err := uuid.FromString(req.GetProductID())
-// 	if err != nil {
-// 		s.log.WarnMsg("uuid.FromString", err)
-// 		return nil, s.errResponse(codes.InvalidArgument, err)
-// 	}
+	feedbackUUID, err := uuid.FromString(req.GetFeedbackID())
+	if err != nil {
+		s.log.WarnMsg("uuid.FromString", err)
+		return nil, s.errResponse(codes.InvalidArgument, err)
+	}
 
-// 	query := queries.NewGetProductByIdQuery(productUUID)
-// 	if err := s.v.StructCtx(ctx, query); err != nil {
-// 		s.log.WarnMsg("validate", err)
-// 		return nil, s.errResponse(codes.InvalidArgument, err)
-// 	}
+	query := queries.NewGetFeedbackByIdQuery(feedbackUUID)
+	if err := s.v.StructCtx(ctx, query); err != nil {
+		s.log.WarnMsg("validate", err)
+		return nil, s.errResponse(codes.InvalidArgument, err)
+	}
 
-// 	product, err := s.ps.Queries.GetProductById.Handle(ctx, query)
-// 	if err != nil {
-// 		s.log.WarnMsg("GetProductById.Handle", err)
-// 		return nil, s.errResponse(codes.Internal, err)
-// 	}
+	feedback, err := s.ps.Queries.GetFeedbackById.Handle(ctx, query)
+	if err != nil {
+		s.log.WarnMsg("GetFeedbackById.Handle", err)
+		return nil, s.errResponse(codes.Internal, err)
+	}
 
-// 	s.metrics.SuccessGrpcRequests.Inc()
-// 	return &readerService.GetProductByIdRes{Product: models.ProductToGrpcMessage(product)}, nil
-// }
+	s.metrics.SuccessGrpcRequests.Inc()
+	return &readerService.GetFeedbackByIdRes{Feedback: models.FeedbackToGrpcMessage(feedback)}, nil
+}
 
 // func (s *grpcService) SearchProduct(ctx context.Context, req *readerService.SearchReq) (*readerService.SearchRes, error) {
 // 	s.metrics.SearchProductGrpcRequests.Inc()

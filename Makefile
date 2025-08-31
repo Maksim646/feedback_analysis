@@ -12,6 +12,17 @@ PROTOC_GEN_GO_GRPC ?= protoc-gen-go-grpc
 
 .PHONY:
 
+run_all:
+	make kafka-up
+	wait
+	make run_api_gateway &
+	wait
+	make run_nlp_worker &
+	wait
+	make run_reader_service &
+	wait
+
+
 run_api_gateway:
 	go run api_gateway_service/cmd/main.go -config=./api_gateway_service/config/config.yaml
 
@@ -24,10 +35,11 @@ run_reader_microservice:
 run_nlp_worker:
 	docker stop mongodb && docker rm mongodb
 	cd proto/nlp_worker
-	docker run -d -p 27017:27017 --name mongodb mongo:latest 
+	docker run -d --name mongodb -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin mongo:latest
 	cd proto/nlp_worker && ./start.sh
 
 run_reader_service:
+	sudo lsof -i :5004 || true
 	cd reader_service && go run cmd/main.go -config=./config/config.yaml
 
 
@@ -182,3 +194,11 @@ proto_writer_message:
 proto_reader_message:
 	@echo Generating product reader messages microservice proto
 	cd reader_service/proto/feedback_reader && protoc --go_out=. --go-grpc_opt=require_unimplemented_servers=false --go-grpc_out=. feedback_reader_messages.proto
+
+proto_feedback_reader:
+	@echo Generating feedback reader microservice proto
+	cd proto/feedback_reader && protoc --go_out=. --go-grpc_opt=require_unimplemented_servers=false --go-grpc_out=. feedback_reader.proto
+
+proto_feedback_reader_message:
+	@echo Generating feedback reader messages microservice proto
+	cd proto/feedback_reader && protoc --go_out=. --go-grpc_opt=require_unimplemented_servers=false --go-grpc_out=. feedback_reader_messages.proto

@@ -192,7 +192,7 @@ func (x *CreateFeedbackReq) GetFeedbackTimestamp() *timestamppb.Timestamp {
 
 type CreateFeedbackRes struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	FeedbackI     string                 `protobuf:"bytes,1,opt,name=FeedbackI,proto3" json:"FeedbackI,omitempty"`
+	FeedbackID    string                 `protobuf:"bytes,1,opt,name=FeedbackID,proto3" json:"FeedbackID,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -227,11 +227,99 @@ func (*CreateFeedbackRes) Descriptor() ([]byte, []int) {
 	return file_feedback_reader_messages_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *CreateFeedbackRes) GetFeedbackI() string {
+func (x *CreateFeedbackRes) GetFeedbackID() string {
 	if x != nil {
-		return x.FeedbackI
+		return x.FeedbackID
 	}
 	return ""
+}
+
+type GetFeedbackByIdReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	FeedbackID    string                 `protobuf:"bytes,1,opt,name=FeedbackID,proto3" json:"FeedbackID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFeedbackByIdReq) Reset() {
+	*x = GetFeedbackByIdReq{}
+	mi := &file_feedback_reader_messages_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFeedbackByIdReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFeedbackByIdReq) ProtoMessage() {}
+
+func (x *GetFeedbackByIdReq) ProtoReflect() protoreflect.Message {
+	mi := &file_feedback_reader_messages_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFeedbackByIdReq.ProtoReflect.Descriptor instead.
+func (*GetFeedbackByIdReq) Descriptor() ([]byte, []int) {
+	return file_feedback_reader_messages_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetFeedbackByIdReq) GetFeedbackID() string {
+	if x != nil {
+		return x.FeedbackID
+	}
+	return ""
+}
+
+type GetFeedbackByIdRes struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Feedback      *Feedback              `protobuf:"bytes,1,opt,name=Feedback,proto3" json:"Feedback,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFeedbackByIdRes) Reset() {
+	*x = GetFeedbackByIdRes{}
+	mi := &file_feedback_reader_messages_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFeedbackByIdRes) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFeedbackByIdRes) ProtoMessage() {}
+
+func (x *GetFeedbackByIdRes) ProtoReflect() protoreflect.Message {
+	mi := &file_feedback_reader_messages_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFeedbackByIdRes.ProtoReflect.Descriptor instead.
+func (*GetFeedbackByIdRes) Descriptor() ([]byte, []int) {
+	return file_feedback_reader_messages_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetFeedbackByIdRes) GetFeedback() *Feedback {
+	if x != nil {
+		return x.Feedback
+	}
+	return nil
 }
 
 var File_feedback_reader_messages_proto protoreflect.FileDescriptor
@@ -256,9 +344,17 @@ const file_feedback_reader_messages_proto_rawDesc = "" +
 	"\x04Text\x18\x03 \x01(\tR\x04Text\x12\x1a\n" +
 	"\bKeywords\x18\x04 \x03(\tR\bKeywords\x12\x1c\n" +
 	"\tSentiment\x18\x05 \x01(\tR\tSentiment\x12H\n" +
-	"\x11FeedbackTimestamp\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\x11FeedbackTimestamp\"1\n" +
-	"\x11CreateFeedbackRes\x12\x1c\n" +
-	"\tFeedbackI\x18\x01 \x01(\tR\tFeedbackIB\x12Z\x10./;readerServiceb\x06proto3"
+	"\x11FeedbackTimestamp\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\x11FeedbackTimestamp\"3\n" +
+	"\x11CreateFeedbackRes\x12\x1e\n" +
+	"\n" +
+	"FeedbackID\x18\x01 \x01(\tR\n" +
+	"FeedbackID\"4\n" +
+	"\x12GetFeedbackByIdReq\x12\x1e\n" +
+	"\n" +
+	"FeedbackID\x18\x01 \x01(\tR\n" +
+	"FeedbackID\"I\n" +
+	"\x12GetFeedbackByIdRes\x123\n" +
+	"\bFeedback\x18\x01 \x01(\v2\x17.readerService.FeedbackR\bFeedbackB\x12Z\x10./;readerServiceb\x06proto3"
 
 var (
 	file_feedback_reader_messages_proto_rawDescOnce sync.Once
@@ -272,21 +368,24 @@ func file_feedback_reader_messages_proto_rawDescGZIP() []byte {
 	return file_feedback_reader_messages_proto_rawDescData
 }
 
-var file_feedback_reader_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_feedback_reader_messages_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_feedback_reader_messages_proto_goTypes = []any{
 	(*Feedback)(nil),              // 0: readerService.Feedback
 	(*CreateFeedbackReq)(nil),     // 1: readerService.CreateFeedbackReq
 	(*CreateFeedbackRes)(nil),     // 2: readerService.CreateFeedbackRes
-	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
+	(*GetFeedbackByIdReq)(nil),    // 3: readerService.GetFeedbackByIdReq
+	(*GetFeedbackByIdRes)(nil),    // 4: readerService.GetFeedbackByIdRes
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
 }
 var file_feedback_reader_messages_proto_depIdxs = []int32{
-	3, // 0: readerService.Feedback.FeedbackTimestamp:type_name -> google.protobuf.Timestamp
-	3, // 1: readerService.CreateFeedbackReq.FeedbackTimestamp:type_name -> google.protobuf.Timestamp
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	5, // 0: readerService.Feedback.FeedbackTimestamp:type_name -> google.protobuf.Timestamp
+	5, // 1: readerService.CreateFeedbackReq.FeedbackTimestamp:type_name -> google.protobuf.Timestamp
+	0, // 2: readerService.GetFeedbackByIdRes.Feedback:type_name -> readerService.Feedback
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_feedback_reader_messages_proto_init() }
@@ -300,7 +399,7 @@ func file_feedback_reader_messages_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_feedback_reader_messages_proto_rawDesc), len(file_feedback_reader_messages_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

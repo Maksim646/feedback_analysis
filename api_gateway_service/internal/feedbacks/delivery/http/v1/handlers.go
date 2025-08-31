@@ -7,6 +7,7 @@ import (
 	"github.com/Maksim646/feedback_analysis/api_gateway_service/internal/dto"
 	"github.com/Maksim646/feedback_analysis/api_gateway_service/internal/metrics"
 	"github.com/Maksim646/feedback_analysis/api_gateway_service/internal/middlewares"
+	"github.com/opentracing/opentracing-go"
 
 	"net/http"
 
@@ -18,10 +19,8 @@ import (
 	httpErrors "github.com/Maksim646/feedback_analysis/pkg/http_errors"
 	"github.com/Maksim646/feedback_analysis/pkg/logger"
 	"github.com/Maksim646/feedback_analysis/pkg/tracing"
-	"github.com/Maksim646/feedback_analysis/pkg/utils"
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
-	"github.com/opentracing/opentracing-go"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -145,27 +144,27 @@ func (h *feedbacksHandlers) GetFeedbackByID() echo.HandlerFunc {
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /feedback/search [get]
-func (h *feedbacksHandlers) SearchFeedback() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		h.metrics.SearchFeedbackRequests.Inc()
+// func (h *feedbacksHandlers) SearchFeedback() echo.HandlerFunc {
+// 	return func(c echo.Context) error {
+// 		h.metrics.SearchFeedbackRequests.Inc()
 
-		ctx, span := tracing.StartHttpServerTracerSpan(c, "feedbacksHandlers.SearchFeedback")
-		defer span.Finish()
+// 		ctx, span := tracing.StartHttpServerTracerSpan(c, "feedbacksHandlers.SearchFeedback")
+// 		defer span.Finish()
 
-		pq := utils.NewPaginationFromQueryParams(c.QueryParam(constants.Size), c.QueryParam(constants.Page))
+// 		pq := utils.NewPaginationFromQueryParams(c.QueryParam(constants.Size), c.QueryParam(constants.Page))
 
-		query := queries.NewSearchFeedbackQuery(c.QueryParam(constants.Search), pq)
-		response, err := h.ps.Queries.SearchFeedback.Handle(ctx, query)
-		if err != nil {
-			h.log.WarnMsg("SearchFeedback", err)
-			h.metrics.ErrorHttpRequests.Inc()
-			return httpErrors.ErrorCtxResponse(c, err, h.cfg.Http.DebugErrorsResponse)
-		}
+// 		query := queries.NewSearchFeedbackQuery(c.QueryParam(constants.Search), pq)
+// 		response, err := h.ps.Queries.SearchFeedback.Handle(ctx, query)
+// 		if err != nil {
+// 			h.log.WarnMsg("SearchFeedback", err)
+// 			h.metrics.ErrorHttpRequests.Inc()
+// 			return httpErrors.ErrorCtxResponse(c, err, h.cfg.Http.DebugErrorsResponse)
+// 		}
 
-		h.metrics.SuccessHttpRequests.Inc()
-		return c.JSON(http.StatusOK, response)
-	}
-}
+// 		h.metrics.SuccessHttpRequests.Inc()
+// 		return c.JSON(http.StatusOK, response)
+// 	}
+// }
 
 func (h *feedbacksHandlers) traceErr(span opentracing.Span, err error) {
 	span.SetTag("error", true)

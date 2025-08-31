@@ -17,8 +17,8 @@ type Repository interface {
 }
 
 type CacheRepository interface {
-	PutFeedbackAnalyzed(ctx context.Context, key string, feedback *models.FeedbackAnalyzed)
-	GetFeedbackAnalyzed(ctx context.Context, key string) (*models.FeedbackAnalyzed, error)
-	DelFeedbackAnalyzed(ctx context.Context, key string)
-	DelAllFeedbackAnalyzed(ctx context.Context)
+	PutFeedback(ctx context.Context, key string, feedback *models.FeedbackAnalyzed)
+	GetFeedback(ctx context.Context, key string) (*models.FeedbackAnalyzed, error)
+	// DelFeedbackAnalyzed(ctx context.Context, key string)
+	// DelAllFeedbackAnalyzed(ctx context.Context)
 }

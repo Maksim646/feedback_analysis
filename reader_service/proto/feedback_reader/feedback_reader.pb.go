@@ -24,19 +24,24 @@ var File_feedback_reader_proto protoreflect.FileDescriptor
 
 const file_feedback_reader_proto_rawDesc = "" +
 	"\n" +
-	"\x15feedback_reader.proto\x12\rreaderService\x1a\x1efeedback_reader_messages.proto2e\n" +
-	"\rreaderService\x12T\n" +
-	"\x0eCreateFeedback\x12 .readerService.CreateFeedbackReq\x1a .readerService.CreateFeedbackResB\x12Z\x10./;readerServiceb\x06proto3"
+	"\x15feedback_reader.proto\x12\rreaderService\x1a\x1efeedback_reader_messages.proto2\xbb\x01\n" +
+	"\x0eFeedbackReader\x12T\n" +
+	"\x0eCreateFeedback\x12 .readerService.CreateFeedbackReq\x1a .readerService.CreateFeedbackRes\x12S\n" +
+	"\vGetFeedback\x12!.readerService.GetFeedbackByIdReq\x1a!.readerService.GetFeedbackByIdResB\x12Z\x10./;readerServiceb\x06proto3"
 
 var file_feedback_reader_proto_goTypes = []any{
-	(*CreateFeedbackReq)(nil), // 0: readerService.CreateFeedbackReq
-	(*CreateFeedbackRes)(nil), // 1: readerService.CreateFeedbackRes
+	(*CreateFeedbackReq)(nil),  // 0: readerService.CreateFeedbackReq
+	(*GetFeedbackByIdReq)(nil), // 1: readerService.GetFeedbackByIdReq
+	(*CreateFeedbackRes)(nil),  // 2: readerService.CreateFeedbackRes
+	(*GetFeedbackByIdRes)(nil), // 3: readerService.GetFeedbackByIdRes
 }
 var file_feedback_reader_proto_depIdxs = []int32{
-	0, // 0: readerService.readerService.CreateFeedback:input_type -> readerService.CreateFeedbackReq
-	1, // 1: readerService.readerService.CreateFeedback:output_type -> readerService.CreateFeedbackRes
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	0, // 0: readerService.FeedbackReader.CreateFeedback:input_type -> readerService.CreateFeedbackReq
+	1, // 1: readerService.FeedbackReader.GetFeedback:input_type -> readerService.GetFeedbackByIdReq
+	2, // 2: readerService.FeedbackReader.CreateFeedback:output_type -> readerService.CreateFeedbackRes
+	3, // 3: readerService.FeedbackReader.GetFeedback:output_type -> readerService.GetFeedbackByIdRes
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name

@@ -52,7 +52,7 @@ type KafkaTopics struct {
 }
 
 type ServiceSettings struct {
-	RedisProductPrefixKey string `mapstructure:"redisProductPrefixKey"`
+	RedisFeedbackPrefixKey string `mapstructure:"redisFeedbackPrefixKey"`
 }
 
 func InitConfig() (*Config, error) {

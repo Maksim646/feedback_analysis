@@ -43,6 +43,6 @@ func (c *createFeedbackAnalyzedHandler) Handle(ctx context.Context, command *Fee
 		return err
 	}
 
-	c.redisRepo.PutFeedbackAnalyzed(ctx, created.FeedbackID, created)
+	c.redisRepo.PutFeedback(ctx, created.FeedbackID, created)
 	return nil
 }

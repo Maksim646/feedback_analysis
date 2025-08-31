@@ -6,7 +6,7 @@ import (
 	"github.com/Maksim646/feedback_analysis/api_gateway_service/internal/feedbacks/queries"
 	kafkaClient "github.com/Maksim646/feedback_analysis/pkg/kafka"
 	"github.com/Maksim646/feedback_analysis/pkg/logger"
-	readerService "github.com/Maksim646/feedback_analysis/proto/feedback_reader"
+	readerService "github.com/Maksim646/feedback_analysis/reader_service/proto/feedback_reader"
 )
 
 type FeedbackService struct {
@@ -19,10 +19,10 @@ func NewFeedbackService(log logger.Logger, cfg *config.Config, kafkaProducer kaf
 	createFeedbackHandler := commands.NewCreateFeedbackAnalysisHandler(log, cfg, kafkaProducer)
 
 	getFeedbackByIdHandler := queries.NewGetFeedbackByIdHandler(log, cfg, rsClient)
-	searchFeedbackHandler := queries.NewSearchFeedbackHandler(log, cfg, rsClient)
+	// searchFeedbackHandler := queries.NewSearchFeedbackHandler(log, cfg, rsClient)
 
 	feedbackCommands := commands.NewFeedbackCommands(createFeedbackHandler)
-	feedbackQueries := queries.NewFeedbackQueries(getFeedbackByIdHandler, searchFeedbackHandler)
+	feedbackQueries := queries.NewFeedbackQueries(getFeedbackByIdHandler /*, searchFeedbackHandler*/)
 
 	return &FeedbackService{Commands: feedbackCommands, Queries: feedbackQueries}
 }

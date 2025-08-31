@@ -27,7 +27,7 @@ func (s *readerMessageProcessor) processFeedbackCreated(ctx context.Context, r *
 	ctx, span := tracing.StartKafkaConsumerTracerSpan(ctx, m.Headers, "readerMessageProcessor.processFeedbackCreated")
 	defer span.Finish()
 
-	msg := &kafkaMessages.FeedbackAnalysisCreated{}
+	msg := &kafkaMessages.FeedbackCreated{}
 	if err := proto.Unmarshal(m.Value, msg); err != nil {
 		s.log.WarnMsg("proto.Unmarshal", err)
 		s.commitErrMessage(ctx, r, m)
@@ -35,7 +35,7 @@ func (s *readerMessageProcessor) processFeedbackCreated(ctx context.Context, r *
 	}
 
 	p := msg.GetFeedback()
-	command := commands.NewFeedbackAnalyzedCommand(p.GetFeedbackID(), p.GetFeedbackText(), p.GetFeedbackSource(), p.GetKeywords(), p.GetSentiment(), p.GetFeedbackTimestamp())
+	command := commands.NewFeedbackAnalyzedCommand(p.GetFeedbackID(), p.GetText(), p.GetFeedbackSource(), p.GetKeywords(), p.GetSentiment(), p.GetFeedbackTimestamp().AsTime())
 	if err := s.v.StructCtx(ctx, command); err != nil {
 		s.log.WarnMsg("validate", err)
 		s.commitErrMessage(ctx, r, m)

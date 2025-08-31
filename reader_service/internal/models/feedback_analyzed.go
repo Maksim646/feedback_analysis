@@ -9,7 +9,7 @@ import (
 )
 
 type FeedbackAnalyzed struct {
-	FeedbackID        string    `json:"feedback_id" validate:"required"`
+	FeedbackID        string    `json:"_id" validate:"required"`
 	FeedbackSource    string    `json:"feedback_source" validate:"required"`
 	Text              string    `json:"feedback_text" validate:"required,min=1,max=500"`
 	Keywords          []string  `json:"keywords" validate:"required,min=1,max=500"`
@@ -38,7 +38,7 @@ type FeedbackAnalyzed struct {
 // 	}
 // }
 
-func ProductToGrpcMessage(feedbackAnalyzed *FeedbackAnalyzed) *readerService.Feedback {
+func FeedbackToGrpcMessage(feedbackAnalyzed *FeedbackAnalyzed) *readerService.Feedback {
 	return &readerService.Feedback{
 		FeedbackID:        feedbackAnalyzed.FeedbackID,
 		FeedbackSource:    feedbackAnalyzed.FeedbackSource,

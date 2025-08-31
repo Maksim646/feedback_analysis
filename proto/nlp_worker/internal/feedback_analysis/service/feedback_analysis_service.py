@@ -16,10 +16,11 @@ from internal.metrics.nlp_worker_metrics import NlpWorkerMetrics
 
 
 class FeedbackAnalysisService:
-    def __init__(self, config: Config, metrics: NlpWorkerMetrics, logger: logging.Logger):
+    def __init__(self, config: Config, metrics: NlpWorkerMetrics, logger: logging.Logger, mongo: FeedbackAnalysisRepository):
         self.config = config
         self.metrics = metrics
         self.logger = logger
+        self.repository = mongo
         
         # Initialize NLP models
         self._initialize_nlp_models()
@@ -79,7 +80,8 @@ class FeedbackAnalysisService:
             )
             
             # Save to repository
-            # self.repository.save_analysis_result(result)
+            print("Сохраняем в репозиторий результат анализа: ", result)
+            self.repository.save_analysis_result(result)
             
             self.logger.info(f"Analysis completed for feedback {feedback_id}: sentiment={sentiment}, keywords={keywords}")
             

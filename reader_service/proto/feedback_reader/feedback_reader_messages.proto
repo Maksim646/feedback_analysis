@@ -27,5 +27,13 @@ message CreateFeedbackReq {
 }
 
 message CreateFeedbackRes {
-  string FeedbackI = 1;
+  string FeedbackID = 1;
+}
+
+message GetFeedbackByIdReq {
+  string FeedbackID = 1;
+}
+
+message GetFeedbackByIdRes {
+  Feedback Feedback = 1;
 }

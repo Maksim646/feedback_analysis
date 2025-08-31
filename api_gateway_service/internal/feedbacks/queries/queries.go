@@ -7,11 +7,11 @@ import (
 
 type FeedbackQueries struct {
 	GetFeedbackById GetFeedbackByIdHandler
-	SearchFeedback  SearchFeedbackHandler
+	//SearchFeedback  SearchFeedbackHandler
 }
 
-func NewFeedbackQueries(getFeedbackById GetFeedbackByIdHandler, searchFeedback SearchFeedbackHandler) *FeedbackQueries {
-	return &FeedbackQueries{GetFeedbackById: getFeedbackById, SearchFeedback: searchFeedback}
+func NewFeedbackQueries(getFeedbackById GetFeedbackByIdHandler /*searchFeedback SearchFeedbackHandler*/) *FeedbackQueries {
+	return &FeedbackQueries{GetFeedbackById: getFeedbackById /*, SearchFeedback: searchFeedback*/}
 }
 
 type GetFeedbackByIdQuery struct {

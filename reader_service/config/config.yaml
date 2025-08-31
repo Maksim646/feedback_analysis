@@ -1,14 +1,14 @@
-serviceName: reader_service
+serviceName: FeedbackReader
 grpc:
-  port: :5003
+  port: :5004
   development: true
 probes:
   readinessPath: /ready
   livenessPath: /live
-  port: :3003
+  port: :3004
   pprof: :6003
   prometheusPath: /metrics
-  prometheusPort: :8003
+  prometheusPort: :8004
   checkIntervalSeconds: 10
 logger:
   level: debug
@@ -22,18 +22,22 @@ postgres:
   dbName: products
   sslMode: false
 kafka:
-  brokers: [ "localhost:9092" ]
-  groupID: writer_microservice_consumer
+  brokers: ["localhost:9092"]
+  groupID: nlp_worker_consumer
   initTopics: true
-kafkaTopics:
-  feedbackRaw:
-    topicName: feedback_raw
-    partitions: 10
-    replicationFactor: 1
-  feedbackAnalyzed:
-    topicName: feedback_analyzed
-    partitions: 10
-    replicationFactor: 1
+  kafkaTopics:
+    feedbackRaw:
+      topicName: feedback_raw
+      partitions: 10
+      replicationFactor: 1
+    feedbackCreate:
+      topicName: feedback_create
+      partitions: 10
+      replicationFactor: 1
+    feedbackAnalyzed:
+      topicName: feedback_analyzed
+      partitions: 10
+      replicationFactor: 1
 redis:
   addr: "localhost:6379"
   password: ""
@@ -41,13 +45,13 @@ redis:
   poolSize: 300
 mongo:
   uri: "mongodb://localhost:27017"
-  user: admin
-  password: admin
-  db: products
+  user: "admin"
+  password: "admin"
+  db: feedback_analysis
 mongoCollections:
-  products: products
+  feedbacks: feedback_analysis
 serviceSettings:
-  redisProductPrefixKey: "reader:product"
+  redisFeedbackPrefixKey: "reader:feedback"
 jaeger:
   enable: true
   serviceName: reader_service

@@ -15,7 +15,7 @@ from proto.nlp_worker_reader import nlp_worker_reader_pb2
 from google.protobuf.timestamp_pb2 import Timestamp
 from datetime import datetime
 
-# from internal.feedback_analysis.repository.feedback_analysis_repository import FeedbackAnalysisRepository
+from internal.feedback_analysis.repository.feedback_analysis_repository import FeedbackAnalysisRepository
 from internal.feedback_analysis.service.feedback_analysis_service import FeedbackAnalysisService
 from internal.feedback_analysis.models.feedback_analysis import FeedbackAnalysisRequest
 from internal.metrics.nlp_worker_metrics import NlpWorkerMetrics
@@ -47,9 +47,11 @@ class KafkaConsumerService:
             value_serializer=lambda x: json.dumps(x).encode('utf-8'),
             key_serializer=lambda x: x.encode('utf-8') if x else None
         )
+
+        self.mongo_repo = FeedbackAnalysisRepository(config, self.logger)
         
         # Initialize NLP service
-        self.nlp_service = FeedbackAnalysisService(config, metrics, self.logger)
+        self.nlp_service = FeedbackAnalysisService(config, metrics, self.logger, self.mongo_repo)
         
         # Thread pool for processing messages
         self.executor = ThreadPoolExecutor(max_workers=5)

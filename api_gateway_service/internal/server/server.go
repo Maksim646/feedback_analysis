@@ -20,7 +20,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	readerService "github.com/Maksim646/feedback_analysis/proto/feedback_reader"
+	readerService "github.com/Maksim646/feedback_analysis/reader_service/proto/feedback_reader"
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"

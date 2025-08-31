@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Maksim646/feedback_analysis/pkg/logger"
 
@@ -11,8 +12,9 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 
-	// uuid "github.com/satori/go.uuid"
-	// "go.mongodb.org/mongo-driver/bson"
+	uuid "github.com/satori/go.uuid"
+	"go.mongodb.org/mongo-driver/bson"
+
 	// "go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -62,20 +64,22 @@ func (p *mongoRepository) CreateFeedback(ctx context.Context, feedback *models.F
 // 	return &updated, nil
 // }
 
-// func (p *mongoRepository) GetProductById(ctx context.Context, uuid uuid.UUID) (*models.Product, error) {
-// 	span, ctx := opentracing.StartSpanFromContext(ctx, "mongoRepository.GetProductById")
-// 	defer span.Finish()
+func (p *mongoRepository) GetFeedbackById(ctx context.Context, uuid uuid.UUID) (*models.FeedbackAnalyzed, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "mongoRepository.GetFeedbackById")
+	defer span.Finish()
 
-// 	collection := p.db.Database(p.cfg.Mongo.Db).Collection(p.cfg.MongoCollections.Products)
+	collection := p.db.Database(p.cfg.Mongo.Db).Collection(p.cfg.MongoCollections.Feedbacks)
 
-// 	var product models.Product
-// 	if err := collection.FindOne(ctx, bson.M{"_id": uuid.String()}).Decode(&product); err != nil {
-// 		p.traceErr(span, err)
-// 		return nil, errors.Wrap(err, "Decode")
-// 	}
+	var feedback models.FeedbackAnalyzed
+	if err := collection.FindOne(ctx, bson.M{"_id": uuid.String()}).Decode(&feedback); err != nil {
+		p.traceErr(span, err)
+		return nil, errors.Wrap(err, "Decode")
+	}
 
-// 	return &product, nil
-// }
+	fmt.Println("feedback from GetFeedbackById:", feedback)
+
+	return &feedback, nil
+}
 
 // func (p *mongoRepository) DeleteProduct(ctx context.Context, uuid uuid.UUID) error {
 // 	span, ctx := opentracing.StartSpanFromContext(ctx, "mongoRepository.DeleteProduct")

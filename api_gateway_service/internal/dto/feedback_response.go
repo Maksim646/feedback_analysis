@@ -1,7 +1,7 @@
 package dto
 
 import (
-	readerService "github.com/Maksim646/feedback_analysis/proto/feedback_reader"
+	readerService "github.com/Maksim646/feedback_analysis/reader_service/proto/feedback_reader"
 )
 
 type FeedbackResponseDto struct {

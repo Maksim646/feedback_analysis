@@ -9,5 +9,4 @@ import "feedback_reader_messages.proto";
 
 service FeedbackReader {
   rpc GetFeedback(GetFeedbackByIdReq) returns (GetFeedbackByIdRes);
-  rpc SearchFeedback(SearchReq) returns (SearchRes);
 }

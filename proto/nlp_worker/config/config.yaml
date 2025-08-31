@@ -51,8 +51,8 @@ redis:
 # MongoDB for storing analysis results
 mongo:
   uri: "mongodb://localhost:27017"
-  user: ""
-  password: ""
+  user: "admin"
+  password: "admin"
   db: feedback_analysis
   collections:
     feedback_analysis: feedback_analysis

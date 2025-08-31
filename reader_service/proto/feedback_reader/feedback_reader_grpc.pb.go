@@ -19,99 +19,137 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ReaderService_CreateFeedback_FullMethodName = "/readerService.readerService/CreateFeedback"
+	FeedbackReader_CreateFeedback_FullMethodName = "/readerService.FeedbackReader/CreateFeedback"
+	FeedbackReader_GetFeedback_FullMethodName    = "/readerService.FeedbackReader/GetFeedback"
 )
 
-// ReaderServiceClient is the client API for ReaderService service.
+// FeedbackReaderClient is the client API for FeedbackReader service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ReaderServiceClient interface {
+type FeedbackReaderClient interface {
 	CreateFeedback(ctx context.Context, in *CreateFeedbackReq, opts ...grpc.CallOption) (*CreateFeedbackRes, error)
+	GetFeedback(ctx context.Context, in *GetFeedbackByIdReq, opts ...grpc.CallOption) (*GetFeedbackByIdRes, error)
 }
 
-type readerServiceClient struct {
+type feedbackReaderClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewReaderServiceClient(cc grpc.ClientConnInterface) ReaderServiceClient {
-	return &readerServiceClient{cc}
+func NewFeedbackReaderClient(cc grpc.ClientConnInterface) FeedbackReaderClient {
+	return &feedbackReaderClient{cc}
 }
 
-func (c *readerServiceClient) CreateFeedback(ctx context.Context, in *CreateFeedbackReq, opts ...grpc.CallOption) (*CreateFeedbackRes, error) {
+func (c *feedbackReaderClient) CreateFeedback(ctx context.Context, in *CreateFeedbackReq, opts ...grpc.CallOption) (*CreateFeedbackRes, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateFeedbackRes)
-	err := c.cc.Invoke(ctx, ReaderService_CreateFeedback_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, FeedbackReader_CreateFeedback_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// ReaderServiceServer is the server API for ReaderService service.
-// All implementations should embed UnimplementedReaderServiceServer
-// for forward compatibility.
-type ReaderServiceServer interface {
-	CreateFeedback(context.Context, *CreateFeedbackReq) (*CreateFeedbackRes, error)
+func (c *feedbackReaderClient) GetFeedback(ctx context.Context, in *GetFeedbackByIdReq, opts ...grpc.CallOption) (*GetFeedbackByIdRes, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetFeedbackByIdRes)
+	err := c.cc.Invoke(ctx, FeedbackReader_GetFeedback_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
-// UnimplementedReaderServiceServer should be embedded to have
+// FeedbackReaderServer is the server API for FeedbackReader service.
+// All implementations should embed UnimplementedFeedbackReaderServer
+// for forward compatibility.
+type FeedbackReaderServer interface {
+	CreateFeedback(context.Context, *CreateFeedbackReq) (*CreateFeedbackRes, error)
+	GetFeedback(context.Context, *GetFeedbackByIdReq) (*GetFeedbackByIdRes, error)
+}
+
+// UnimplementedFeedbackReaderServer should be embedded to have
 // forward compatible implementations.
 //
 // NOTE: this should be embedded by value instead of pointer to avoid a nil
 // pointer dereference when methods are called.
-type UnimplementedReaderServiceServer struct{}
+type UnimplementedFeedbackReaderServer struct{}
 
-func (UnimplementedReaderServiceServer) CreateFeedback(context.Context, *CreateFeedbackReq) (*CreateFeedbackRes, error) {
+func (UnimplementedFeedbackReaderServer) CreateFeedback(context.Context, *CreateFeedbackReq) (*CreateFeedbackRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateFeedback not implemented")
 }
-func (UnimplementedReaderServiceServer) testEmbeddedByValue() {}
+func (UnimplementedFeedbackReaderServer) GetFeedback(context.Context, *GetFeedbackByIdReq) (*GetFeedbackByIdRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFeedback not implemented")
+}
+func (UnimplementedFeedbackReaderServer) testEmbeddedByValue() {}
 
-// UnsafeReaderServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ReaderServiceServer will
+// UnsafeFeedbackReaderServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to FeedbackReaderServer will
 // result in compilation errors.
-type UnsafeReaderServiceServer interface {
-	mustEmbedUnimplementedReaderServiceServer()
+type UnsafeFeedbackReaderServer interface {
+	mustEmbedUnimplementedFeedbackReaderServer()
 }
 
-func RegisterReaderServiceServer(s grpc.ServiceRegistrar, srv ReaderServiceServer) {
-	// If the following call pancis, it indicates UnimplementedReaderServiceServer was
+func RegisterFeedbackReaderServer(s grpc.ServiceRegistrar, srv FeedbackReaderServer) {
+	// If the following call pancis, it indicates UnimplementedFeedbackReaderServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization
 	// time to prevent it from happening at runtime later due to I/O.
 	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
 		t.testEmbeddedByValue()
 	}
-	s.RegisterService(&ReaderService_ServiceDesc, srv)
+	s.RegisterService(&FeedbackReader_ServiceDesc, srv)
 }
 
-func _ReaderService_CreateFeedback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _FeedbackReader_CreateFeedback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateFeedbackReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ReaderServiceServer).CreateFeedback(ctx, in)
+		return srv.(FeedbackReaderServer).CreateFeedback(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ReaderService_CreateFeedback_FullMethodName,
+		FullMethod: FeedbackReader_CreateFeedback_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReaderServiceServer).CreateFeedback(ctx, req.(*CreateFeedbackReq))
+		return srv.(FeedbackReaderServer).CreateFeedback(ctx, req.(*CreateFeedbackReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// ReaderService_ServiceDesc is the grpc.ServiceDesc for ReaderService service.
+func _FeedbackReader_GetFeedback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFeedbackByIdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FeedbackReaderServer).GetFeedback(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FeedbackReader_GetFeedback_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FeedbackReaderServer).GetFeedback(ctx, req.(*GetFeedbackByIdReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// FeedbackReader_ServiceDesc is the grpc.ServiceDesc for FeedbackReader service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var ReaderService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "readerService.readerService",
-	HandlerType: (*ReaderServiceServer)(nil),
+var FeedbackReader_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "readerService.FeedbackReader",
+	HandlerType: (*FeedbackReaderServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "CreateFeedback",
-			Handler:    _ReaderService_CreateFeedback_Handler,
+			Handler:    _FeedbackReader_CreateFeedback_Handler,
+		},
+		{
+			MethodName: "GetFeedback",
+			Handler:    _FeedbackReader_GetFeedback_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

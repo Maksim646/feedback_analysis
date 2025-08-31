@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 
 @dataclass
@@ -10,7 +10,7 @@ class FeedbackAnalysisResult:
     feedback_source: str
     text: str
     created_at: datetime
-    keywords: str
+    keywords: List[str]
     sentiment: str
     analyzed_at: datetime
     
